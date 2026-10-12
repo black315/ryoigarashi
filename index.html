@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ryo Igarashi | ポータル</title>
+  <meta name="description" content="ポータルサイト。事業内容、趣味、問い合わせ先。">
+  <meta property="og:title" content="Ryo Igarashi | Portal">
+  <meta property="og:description" content="ビジネスとライフスタイルを加速させる、ポータルサイト。">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#fafafa">
+
+  <!-- JS有効時のみ、詳細カードを折りたたむための目印 -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top">Ryo Igarashi</a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="メニューを開く">
+        <span class="nav-toggle__bars"></span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="メインメニュー">
+        <a class="site-nav__link" href="#services">Services</a>
+        <a class="site-nav__link" href="#hobbies">Hobbies</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== ① Hero ===== -->
+    <section class="hero" id="top">
+      <div class="container">
+        <h1 class="hero__title">
+          <span class="hero__line">Everything for a Better Life.</span>
+        </h1>
+        <p class="hero__lead">
+        ビジネスの加速から、日々の暮らしの探求まで。<br>
+        ジャンルにとらわれないすべての試みが、誰かの明日をより良く変えていく。<br>
+        ここにあるのは、ひとつの洗練されたライフスタイルと、ビジネスの可能性。
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn--ghost" href="https://line.me/ti/p/0yxEpxLLM9" data-link="line" target="_blank" rel="noopener"><i class="fa-brands fa-line" aria-hidden="true"></i>LINE</a>
+          <a class="btn btn--ghost" href="https://www.instagram.com/ry0x13462e1" data-link="instagram" target="_blank" rel="noopener"><i class="fa-brands fa-instagram" aria-hidden="true"></i>Instagram</a>
+          <a class="btn btn--ghost" href="https://app.spirinc.com/patterns/availability-sharing/clzEatdir4sfq37VJCPQi/confirm" data-link="meeting" target="_blank" rel="noopener"><i class="fa-regular fa-calendar" aria-hidden="true"></i>Meeting</a>
+        </div>
+
+        <div class="hero__jump" aria-label="事業カテゴリへ移動">
+          <button class="chip" type="button" data-jump="it">IT・WEB・FX</button>
+          <button class="chip" type="button" data-jump="bar">飲食店</button>
+          <button class="chip" type="button" data-jump="marketing">マーケティング・集客</button>
+          <button class="chip" type="button" data-jump="career">キャリア・ライフスタイル</button>
+          <button class="chip" type="button" data-jump="global">グローバル</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ② Services ===== -->
+    <section class="section section--white" id="services">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title">Services</h2>
+          <p class="section__lead">あなたに役立つことを。協業パートナーさんも募集しています。</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="事業カテゴリ">
+          <button class="tab" role="tab" type="button" id="tab-all" aria-selected="true" aria-controls="service-grid" data-filter="all">すべて</button>
+          <button class="tab" role="tab" type="button" id="tab-it" aria-selected="false" aria-controls="service-grid" tabindex="-1" data-filter="it">IT・WEB・FX</button>
+          <button class="tab" role="tab" type="button" id="tab-bar" aria-selected="false" aria-controls="service-grid" tabindex="-1" data-filter="bar">飲食店</button>
+          <button class="tab" role="tab" type="button" id="tab-marketing" aria-selected="false" aria-controls="service-grid" tabindex="-1" data-filter="marketing">マーケティング・集客</button>
+          <button class="tab" role="tab" type="button" id="tab-career" aria-selected="false" aria-controls="service-grid" tabindex="-1" data-filter="career">キャリア・ライフスタイル</button>
+          <button class="tab" role="tab" type="button" id="tab-global" aria-selected="false" aria-controls="service-grid" tabindex="-1" data-filter="global">グローバル</button>
+        </div>
+
+        <!--
+          事業カードの追加方法：
+          <article class="service-card" data-category="…"> のブロックをコピーして、
+          data-category（it / bar / marketing / career / global）、画像（images/）、文言、外部リンク（href）を書き換えてください。
+          外部リンクのボタンは、LP / 公式LINE / LINEオープンチャット / Instagram / YouTube / TikTok のアイコン付きで
+          既に用意しています。同じ種類のカードからコピーすると簡単です。
+        -->
+        <div class="service-grid" id="service-grid" role="tabpanel" aria-labelledby="tab-all">
+
+          <!-- IT・WEB・システム・FX -->
+          <article class="service-card" data-category="it">
+            <div class="service-card__media"><img src="images/it.jpg" alt="システム開発保守支援のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-gears" aria-hidden="true"></i></span>
+              <span class="service-card__title">システム開発保守支援</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">システムの開発・保守に関するご相談を、実務面から支援します。</span>
+              <span class="service-card__tags"><span class="tag">法人</span><span class="tag">業務委託</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>新規開発、既存システムの運用・改善など、お困りごとをうかがってから進め方をご提案します。</p>
+              <a class="btn btn--ghost btn--small" href="https://www.mebic.com/cluster/igarashi-ryou.html" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>詳しく見る<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="it">
+            <div class="service-card__media"><img src="images/sp-pc.jpg" alt="スマホ・パソコンサポートのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i></span>
+              <span class="service-card__title">スマホ・パソコンサポート</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">操作・設定・トラブルなど、スマホやパソコンのお困りごとに対応します。</span>
+              <span class="service-card__tags"><span class="tag">個人</span><span class="tag">小規模事業者</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>「設定が分からない」「急に動かなくなった」など、小さなことでも気軽にご相談ください。</p>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="it">
+            <div class="service-card__media"><img src="images/VELORX_logo_name.JPG" alt="FXトレードのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i></span>
+              <span class="service-card__title">FXトレード</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">FXトレードの運用と、使用している自動化ツールの販売を行っています。</span>
+              <span class="service-card__tags"><span class="tag">何もしたくない方</span><span class="tag">自動化ツール</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>ツールの仕組みや使い方、費用を事前に説明します。FX取引には元本を失うリスクがあり、利益を保証するものではありません。</p>
+              <a class="btn btn--ghost btn--small" href="velorx.html" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>詳しく見る<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="it" hidden>
+            <div class="service-card__media"><img src="images/it-homepage.svg" alt="ホームページ作成のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></span>
+              <span class="service-card__title">ホームページ制作</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">ホームページ制作のご相談を受け付け、制作パートナーにおつなぎします。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">個人・法人</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>目的や予算をうかがったうえで、合う制作パートナーをご紹介します。見積もりや制作は、パートナー側が対応します。</p>
+              <a class="btn btn--ghost btn--small" href="https://example.com/" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>準備中<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="it" hidden>
+            <div class="service-card__media"><img src="images/it-webdesign.svg" alt="Webデザイン制作のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-pen-ruler" aria-hidden="true"></i></span>
+              <span class="service-card__title">Webデザイン制作</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">バナーやLP、サイトのデザインのご相談を受け付けています。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">個人・法人</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>イメージや参考サイトを共有いただければ、制作パートナーへの依頼内容を一緒に整理します。</p>
+              <a class="btn btn--ghost btn--small" href="https://example.com/" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>準備中<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="it">
+            <div class="service-card__media"><img src="images/it-freelance.png" alt="フリーランスエンジニア向け案件紹介のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i></span>
+              <span class="service-card__title">フリーランスエンジニア向け案件紹介</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">スキルや希望に合う案件を、フリーランスのエンジニアの方にご紹介します。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">フリーランスエンジニア</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>得意な技術、希望単価、稼働日数などをうかがい、条件に近い案件をご案内します。(エージェント会社複数社ご案内可能)</p>
+            </div></div>
+          </article>
+
+          <!-- 店舗・BAR -->
+          <article class="service-card" data-category="bar">
+            <div class="service-card__media"><img src="images/bar.PNG" alt="バーのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-martini-glass-citrus" aria-hidden="true"></i></span>
+              <span class="service-card__title">バー</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">オーナーとして運営するバー。お酒と会話を楽しめる場所です。</span>
+              <span class="service-card__tags"><span class="tag">大阪</span><span class="tag">貸切・イベント</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>ご来店のほか、貸切やイベント開催のご相談も受け付けています。店舗の詳細は、準備ができ次第こちらに掲載します。</p>
+              <a class="btn btn--ghost btn--small" href="https://line.me/R/ti/p/@359hgvtc" target="_blank" rel="noopener" data-link-type="line"><i class="fa-brands fa-line" aria-hidden="true"></i>公式LINE<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <!-- マーケティング・集客・コミュニティ -->
+          <article class="service-card" data-category="marketing">
+            <div class="service-card__media"><img src="images/youtube.png" alt="インフルエンサープロデュースのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-bullhorn" aria-hidden="true"></i></span>
+              <span class="service-card__title">インフルエンサープロデュース</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">発信で影響力を持ちたい方へ、設計から運用までのコンサルティング。</span>
+              <span class="service-card__tags"><span class="tag">個人</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>アカウントの方向性づくり、投稿の設計、PR案件の獲得まで、現状に合わせて一緒に考えます。まずは今の状況をお聞かせください。</p>
+              <p>実績: モテたいヲタク系男子ゆる</p>
+              <a class="btn btn--ghost btn--small" href="https://www.youtube.com/@motewotayuru" target="_blank" rel="noopener" data-link-type="youtube"><i class="fa-brands fa-youtube" aria-hidden="true"></i>YouTube<span class="visually-hidden">（新しいタブで開きます）</span></a>
+              <a class="btn btn--ghost btn--small" href="https://www.tiktok.com/@motewotayuru" target="_blank" rel="noopener" data-link-type="tiktok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i>TikTok<span class="visually-hidden">（新しいタブで開きます）</span></a>
+              <a class="btn btn--ghost btn--small" href="https://www.instagram.com/motewotayuru" target="_blank" rel="noopener" data-link-type="instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i>Instagram<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="marketing">
+            <div class="service-card__media"><img src="images/marketing-promotion.png" alt="集客支援のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></span>
+              <span class="service-card__title">集客支援</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">お店や事業の集客を、SNSや導線づくりの面から支援します。</span>
+              <span class="service-card__tags"><span class="tag">アフィリエイト</span><span class="tag">個人事業主</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>「お客様が来ない」「どこから手を付けるか分からない」といった段階から相談できます。現状の整理から始めます。</p>
+              <a class="btn btn--ghost btn--small" href="https://bgpea001lp.netlify.app/" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>詳しく見る<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="marketing">
+            <div class="service-card__media"><img src="images/GRITERS.PNG" alt="コミュニティ運営・イベント開催のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span>
+              <span class="service-card__title">コミュニティ運営・イベント開催</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">人が集まり、つながる場づくりとイベントの企画・開催を行っています。</span>
+              <span class="service-card__tags"><span class="tag">個人</span><span class="tag">友達作り</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>交流会や企画イベントの開催情報は随時お知らせします。コミュニティ運営のノウハウについてのご相談も歓迎です。</p>
+              <a class="btn btn--ghost btn--small" href="https://line.me/ti/g2/o8FCDZDjSIpCu2IB1A-LVwkr3bz0yI2hDsDMmQ" target="_blank" rel="noopener" data-link-type="openchat"><i class="fa-solid fa-comments" aria-hidden="true"></i>GRITERSに参加<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="marketing">
+            <div class="service-card__media"><img src="images/marketing-matching.jpeg" alt="ビジネスマッチングコミュニティ紹介のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></span>
+              <span class="service-card__title">ビジネスマッチングコミュニティ紹介</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">目的に合う人や企業と出会えるコミュニティをご紹介します。</span>
+              <span class="service-card__tags"><span class="tag">経営者・個人事業主</span><span class="tag">協業</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>どんな相手と出会いたいかをうかがい、合いそうなコミュニティをご案内します。</p>
+            </div></div>
+          </article>
+
+          <!-- キャリア・ライフスタイル支援 -->
+          <article class="service-card" data-category="career">
+            <div class="service-card__media"><img src="images/soul-syncs.jpg" alt="キャリアアップ支援のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-briefcase" aria-hidden="true"></i></span>
+              <span class="service-card__title">キャリアアップ支援</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">転職先のご紹介を通じて、キャリアアップをサポートします。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">転職を考えている方</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>希望や不安をうかがい、合いそうな転職サービス・求人をご案内します。転職するかどうか迷っている段階でも大丈夫です。</p>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="career">
+            <div class="service-card__media"><img src="images/career-unemployment.jpg" alt="失業手当申請サポートのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-file-lines" aria-hidden="true"></i></span>
+              <span class="service-card__title">失業手当申請サポート</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">失業手当の申請に関するサポートサービスをご案内します。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">退職した方・退職予定の方</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>手続きの流れや事前に必要な準備を、サポートサービスにつなぎながらご案内します。申請そのものはハローワークでの手続きになります。</p>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="career">
+            <div class="service-card__media"><img src="images/jes-litus.jpg" alt="固定費見直しのイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
+              <span class="service-card__title">固定費見直し</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">毎月の固定費を見直したい方へ、サービスをご案内します。</span>
+              <span class="service-card__tags"><span class="tag">個人・法人</span><span class="tag">家計を見直したい方</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>まずは無料のお見積もりから</p>
+              <a class="btn btn--ghost btn--small" href="https://jes-litus.co.jp/?p=6747133211" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>詳しく見る<span class="visually-hidden">（新しいタブで開きます）</span></a>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="career">
+            <div class="service-card__media"><img src="images/career-realestate.jpeg" alt="不動産賃貸・売買のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-house" aria-hidden="true"></i></span>
+              <span class="service-card__title">不動産賃貸・売買</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">賃貸・売買のご相談を受け付け、不動産会社におつなぎします。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">個人・法人</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>エリア・予算・ご希望をうかがい、対応できる不動産会社をご紹介します。契約や重要事項の説明は、不動産会社が行います。</p>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="career" hidden>
+            <div class="service-card__media"><img src="images/career-buyback.svg" alt="買取のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-tags" aria-hidden="true"></i></span>
+              <span class="service-card__title">買取</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">不要になった品物の買取サービスをご案内します。</span>
+              <span class="service-card__tags"><span class="tag">営業代行</span><span class="tag">整理したい方</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>品物の種類をうかがい、買取に対応できる事業者へおつなぎします。</p>
+            </div></div>
+          </article>
+
+          <article class="service-card" data-category="career">
+            <div class="service-card__media"><img src="images/career-sidejob.jpeg" alt="お小遣い案件紹介のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-coins" aria-hidden="true"></i></span>
+              <span class="service-card__title">お小遣い案件紹介</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">空いた時間で取り組める、副収入の案件をご紹介します。</span>
+              <span class="service-card__tags"><span class="tag">副収入が欲しい方</span><span class="tag">主婦・会社員</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>作業内容や報酬、必要な時間を事前に説明します。無理のない範囲で始められるものから選べます。</p>
+            </div></div>
+          </article>
+
+          <!-- グローバル -->
+          <article class="service-card" data-category="global">
+            <div class="service-card__media"><img src="images/celestiae.PNG" alt="海外事業のイメージ" width="640" height="400" loading="lazy"></div>
+            <button class="service-card__head" type="button">
+              <span class="service-card__icon"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i></span>
+              <span class="service-card__title">海外事業</span>
+              <span class="service-card__chevron"><i class="fa-solid fa-plus" aria-hidden="true"></i></span>
+              <span class="service-card__summary">海外に向けた事業展開に取り組んでいます。</span>
+              <span class="service-card__tags"><span class="tag">海外展開を考える方</span><span class="tag">個人・法人</span></span>
+            </button>
+            <div class="service-card__panel"><div class="service-card__panel-inner">
+              <p>海外での事業展開や協業のご相談を受け付けています。詳しい取り組みはお問い合わせの際にご説明します。</p>
+            </div></div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ③ Hobbies ===== -->
+    <section class="section" id="hobbies">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="section__title">Hobbies</h2>
+          <p class="section__lead">趣味の紹介。一緒に楽しめることがあればぜひ。</p>
+        </div>
+
+        <!-- 趣味カードの追加方法：<article class="hobby-card"> をコピーして、画像・タイトル・説明を書き換えてください。 -->
+        <div class="hobby-grid">
+          <article class="hobby-card">
+            <div class="hobby-card__media"><img src="images/wine.jpg" alt="ワインのイメージ" width="640" height="400" loading="lazy"></div>
+            <div class="hobby-card__body">
+              <h3 class="hobby-card__title">ワイン</h3>
+              <p class="hobby-card__desc">ワイン会をやっていたりもします。</p>
+            </div>
+          </article>
+          <article class="hobby-card">
+            <div class="hobby-card__media"><img src="images/band.jpg" alt="バンドのイメージ" width="640" height="400" loading="lazy"></div>
+            <div class="hobby-card__body">
+              <h3 class="hobby-card__title">バンド活動</h3>
+              <p class="hobby-card__desc">バンドを組んでおり、ギターを担当しています。</p>
+            </div>
+          </article>
+          <article class="hobby-card">
+            <div class="hobby-card__media"><img src="images/darts.HEIC" alt="趣味 ③のイメージ" width="640" height="400" loading="lazy"></div>
+            <div class="hobby-card__body">
+              <h3 class="hobby-card__title">ダーツ</h3>
+              <p class="hobby-card__desc">ダーツバーたまに行きます。自分のバーにも置いております。（撤去予定）</p>
+            </div>
+          </article>
+          <article class="hobby-card">
+            <div class="hobby-card__media"><img src="images/moon.jpg" alt="月のオーナーのイメージ" width="640" height="400" loading="lazy"></div>
+            <div class="hobby-card__body">
+              <h3 class="hobby-card__title">月のオーナー</h3>
+              <p class="hobby-card__desc">月の土地を所有しています。</p>
+              <p class="hobby-card__desc"><a class="btn btn--ghost btn--small" href="https://www.lunarembassy.jp/osusume/osusume?utm_source=a8_osumo&a8=ES-w8SPr6CqtpRtw.zdMsWX7FXWBYtqo_C1wCs1SVIqYNCdyfC-EmC-y2pVCJU-EVSeX6C1Fw.9Bxs00000000623001" target="_blank" rel="noopener" data-link-type="lp"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>詳しく見る<span class="visually-hidden">（新しいタブで開きます）</span></a></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <!-- 事業内容によっては特定商取引法に基づく表記ページが必要です。作成したらここにリンクを追加してください。 -->
+      <p>&copy; <span id="year">2026</span> Igarashi Ryo. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
