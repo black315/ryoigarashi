@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="VELORX_logo.png" type="image/png">
+<title>VELORX | GOLD AUTOMATED TRADING SYSTEM</title>
+<meta name="description" content="VELORX — MT4用ゴールド専用自動売買システム。感情ではなく、ルールで判断する。">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          void: '#05070c',
+          panel: '#0d1424',
+          panel2: '#111a2e',
+          hair: 'rgba(180,195,225,0.10)',
+          ink: '#eef1f8',
+          inkdim: '#98a3ba',
+          inkmute: '#5c6680',
+          gold1: '#f2ddab',
+          gold2: '#c8a463',
+          gold3: '#8a6d3b',
+          silver1: '#ffffff',
+          silver2: '#b8c4d6',
+          silver3: '#e6ecf2',
+          green: '#57d19c',
+          red: '#e2776d'
+        },
+        fontFamily: {
+          mincho: ["'Shippori Mincho'", 'serif'],
+          garamond: ["'Cormorant Garamond'", 'serif'],
+          sans: ["'Noto Sans JP'", 'sans-serif'],
+          mono: ["'IBM Plex Mono'", 'monospace']
+        }
+      }
+    }
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<style>
+  :root{
+    --bg:#05070c;
+    --panel:#0d1424;
+    --panel2:#111a2e;
+    --line: rgba(180,195,225,0.10);
+    --line-strong: rgba(180,195,225,0.22);
+    --ink:#eef1f8;
+    --ink-dim:#98a3ba;
+    --ink-mute:#5c6680;
+    --gold-1:#f2ddab;
+    --gold-2:#c8a463;
+    --gold-3:#8a6d3b;
+    --silver-1:#ffffff;
+    --silver-2:#b8c4d6;
+    --silver-3:#e6ecf2;
+    --green:#57d19c;
+    --red:#e2776d;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:rgba(184,196,214,0.35); color:#fff; }
+
+  /* ---------- Typography helpers ---------- */
+  .font-display{ font-family:'Shippori Mincho', serif; }
+  .font-en{ font-family: serif; }
+  .font-mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .text-gradient-silver{
+    background:linear-gradient(135deg,#ffffff 0%, #c3cee2 45%, #8f9db8 75%, #e7edf6 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+  }
+  .text-gradient-gold{
+    /* background:linear-gradient(135deg, var(--gold-1) 0%, var(--gold-2) 55%, var(--gold-1) 100%); */
+    background:linear-gradient(135deg, var(--silver-1) 0%, var(--silver-2) 55%, var(--silver-3) 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+  }
+  .text-gradient-gold-price{
+    background:linear-gradient(135deg, var(--gold-1) 0%, var(--gold-2) 55%, var(--gold-1) 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+  }
+
+  /* ---------- Background atmosphere ---------- */
+  .bg-void{ background:var(--bg); }
+
+  .bg-noise-grid{
+    background-image:
+      radial-gradient(circle at 18% 20%, rgba(120,150,210,0.10) 0%, transparent 40%),
+      radial-gradient(circle at 82% 6%, rgba(200,164,99,0.08) 0%, transparent 38%);
+  }
+
+  .dot-field{
+    position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(rgba(160,180,220,0.35) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 70% at 12% 30%, black 0%, transparent 70%);
+            mask-image: radial-gradient(ellipse 60% 70% at 12% 30%, black 0%, transparent 70%);
+    opacity:0.5;
+  }
+
+  .hairline{
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--line-strong) 50%, transparent);
+  }
+
+  .hairline-dot{
+    position:relative;
+  }
+  .hairline-dot::after{
+    content:'';
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:5px; height:5px; border-radius:50%;
+    background:var(--silver-1);
+    box-shadow:0 0 10px 2px rgba(242,221,171,0.7);
+  }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(5,7,12,0);
+    border-bottom:1px solid transparent;
+    transition:background .4s ease, border-color .4s ease, transform .4s ease;
+  }
+  .site-header.is-scrolled{
+    background:rgba(6,9,16,0.82);
+    border-bottom:1px solid var(--line);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-gold{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    background:linear-gradient(135deg, #e9cf9c 0%, #c8a463 55%, #a9803f 100%);
+    color:#191207;
+    font-weight:700;
+    letter-spacing:.03em;
+    padding:1rem 2.4rem;
+    border-radius:2px;
+    box-shadow:0 10px 30px -8px rgba(200,164,99,0.55);
+    transition:transform .3s ease, box-shadow .3s ease, filter .3s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .btn-gold:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -6px rgba(200,164,99,0.7); filter:brightness(1.05); }
+  .btn-gold:active{ transform:translateY(0); }
+
+  .btn-ghost{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+    border:1px solid var(--line-strong);
+    color:var(--ink);
+    padding:1rem 2.2rem;
+    border-radius:2px;
+    background:rgba(255,255,255,0.02);
+    transition:border-color .3s ease, background .3s ease;
+    letter-spacing:.03em;
+  }
+  .btn-ghost:hover{ border-color: var(--silver-2); background:rgba(200,164,99,0.06); }
+
+  .btn-sm{
+    font-size:.8rem; padding:.65rem 1.4rem;
+  }
+
+  /* ---------- Eyebrow ---------- */
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.28em;
+    color:var(--silver-2);
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--silver-2));
+  }
+
+  /* ---------- Panels / cards ---------- */
+  .panel{
+    background:linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
+    border:1px solid var(--line);
+  }
+  .panel-flat{
+    background:var(--panel);
+    border:1px solid var(--line);
+  }
+
+  /* ---------- Logo mark (V glyph) ---------- */
+  .v-mark{ display:inline-block; }
+  .v-mark svg{ display:block; }
+
+  /* ---------- Spec strip ---------- */
+  .spec-item{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.015);
+  }
+  .spec-item + .spec-item{ border-left:1px solid var(--line); }
+
+  /* ---------- Comparison ---------- */
+  .compare-card{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%), var(--panel);
+  }
+  .compare-card.is-velorx{
+    border-color: var(--silver-2);
+    background:linear-gradient(180deg, rgba(200,164,99,0.08), transparent 45%), var(--panel);
+  }
+  .compare-row + .compare-row{ border-top:1px solid var(--line); }
+  .icon-ring{
+    width:38px; height:38px;
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+
+  /* ---------- Evidence table ---------- */
+  .data-table{ border-collapse:collapse; width:100%; }
+  .data-table th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem; letter-spacing:.1em; color:var(--ink-mute);
+    text-align:left; padding:.75rem .9rem; border-bottom:1px solid var(--line-strong);
+    font-weight:500;
+  }
+  .data-table td{
+    padding:.7rem .9rem; font-size:.86rem; color:var(--ink-dim);
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .data-table tr:last-child td{ border-bottom:none; }
+  .profit{ color:var(--green); font-weight:600; }
+
+  /* ---------- Risk box ---------- */
+  .risk-box{
+    border:1px solid rgba(226,119,109,0.28);
+    background:rgba(226,119,109,0.045);
+  }
+  .risk-item{
+    border:1px solid rgba(226,119,109,0.18);
+    background:rgba(0,0,0,0.15);
+    color:#f0b3ac;
+  }
+
+  /* ---------- Plans ---------- */
+  .plan-card{
+    border:1px solid var(--line);
+    background:var(--panel);
+    position:relative;
+  }
+  .plan-card.featured{
+    border-color:var(--silver-2);
+    background:linear-gradient(180deg, rgba(200,164,99,0.09), transparent 55%), var(--panel2);
+  }
+  .plan-badge{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.65rem; letter-spacing:.14em;
+    padding:.3rem .7rem; border-radius:1px;
+  }
+
+  /* ---------- Steps ---------- */
+  .step-item{
+    border:1px solid var(--line);
+    background:var(--panel);
+  }
+  .step-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--silver-2);
+    font-size:.7rem;
+    letter-spacing:.08em;
+  }
+
+  /* ---------- Set / Run / Review loop ---------- */
+  .loop-card{
+    border:1px solid var(--line);
+    background:var(--panel);
+  }
+
+  /* ---------- Fit check ---------- */
+  .fit-yes{ border:1px solid rgba(87,209,156,0.25); background:rgba(87,209,156,0.035); }
+  .fit-no{ border:1px solid rgba(226,119,109,0.25); background:rgba(226,119,109,0.035); }
+  .fit-list li{ border-bottom:1px solid var(--line); }
+  .fit-list li:last-child{ border-bottom:none; }
+
+  /* ---------- Offer ---------- */
+  .offer-box{
+    border:1px solid var(--silver-2);
+    background:radial-gradient(120% 140% at 50% -10%, rgba(200,164,99,0.14) 0%, transparent 55%), linear-gradient(180deg, var(--panel2), var(--panel));
+    box-shadow:0 30px 80px -30px rgba(0,0,0,0.7);
+  }
+
+  /* ---------- Candlestick decorative motif ---------- */
+  .candles{ position:absolute; pointer-events:none; opacity:.35; }
+
+  /* ---------- Hero entrance (single orchestrated animation) ---------- */
+  @keyframes vxFadeUp{
+    from{ opacity:0; transform:translateY(18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .vx-in{ opacity:0; animation:vxFadeUp .9s cubic-bezier(.16,.84,.44,1) forwards; }
+  .vx-in-1{ animation-delay:.05s; }
+  .vx-in-2{ animation-delay:.28s; }
+  .vx-in-3{ animation-delay:.5s; }
+  .vx-in-4{ animation-delay:.72s; }
+  .vx-in-5{ animation-delay:.92s; }
+
+  @media (prefers-reduced-motion: reduce){
+    .vx-in{ animation:none; opacity:1; transform:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ---------- Mobile sticky CTA ---------- */
+  .mobile-cta-bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:rgba(8,11,18,0.92);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--line-strong);
+    padding:.7rem .9rem;
+    padding-bottom:calc(.7rem + env(safe-area-inset-bottom));
+  }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--silver-2);
+    outline-offset:3px;
+  }
+
+  .container-vx{ max-width:1120px; margin:0 auto; padding:0 1.5rem; }
+
+  @media (min-width:768px){
+    .container-vx{ padding:0 2.5rem; }
+  }
+</style>
+</head>
+<body class="bg-void">
+
+<!-- ============ HEADER ============ -->
+<header id="site-header" class="site-header">
+  <div class="container-vx flex items-center justify-between py-4">
+    <a href="#top" class="flex items-center gap-2.5">
+      <span class="v-mark" style="width:22px;">
+        <img src="VELORX_logo.png" alt="ロゴマーク" width="50px" class="h-auto max-w-full">
+      </span>
+      <span class="font-en text-lg tracking-[0.18em] text-gradient-silver font-semibold">VELORX</span>
+    </a>
+    <a href="https://line.me/ti/p/0yxEpxLLM9" target="_blank" class="btn-ghost btn-sm hidden sm:inline-flex">Contact Me</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="relative overflow-hidden pt-36 pb-24 md:pt-44 md:pb-32 bg-noise-grid">
+    <div class="dot-field"></div>
+
+    <!-- decorative candlesticks, right edge -->
+    <svg class="candles hidden md:block" style="right:-40px; top:60px;" width="220" height="420" viewBox="0 0 220 420" fill="none">
+      <g stroke="#7c8bab" stroke-width="1.2">
+        <line x1="20" y1="330" x2="20" y2="380"/><rect x="12" y="345" width="16" height="24" fill="#0d1424" stroke="#7c8bab"/>
+        <line x1="55" y1="300" x2="55" y2="360"/><rect x="47" y="310" width="16" height="35" fill="#57d19c" stroke="#57d19c"/>
+        <line x1="90" y1="260" x2="90" y2="330"/><rect x="82" y="270" width="16" height="40" fill="#0d1424" stroke="#7c8bab"/>
+        <line x1="125" y1="200" x2="125" y2="290"/><rect x="117" y="215" width="16" height="55" fill="#57d19c" stroke="#57d19c"/>
+        <line x1="160" y1="140" x2="160" y2="230"/><rect x="152" y="155" width="16" height="55" fill="#57d19c" stroke="#57d19c"/>
+        <line x1="195" y1="60" x2="195" y2="170"/><rect x="187" y="80" width="16" height="65" fill="#0d1424" stroke="#7c8bab"/>
+      </g>
+      <path d="M10 380 L55 320 L90 300 L125 235 L160 165 L195 90" stroke="#c8a463" stroke-width="1" fill="none" opacity=".5"/>
+    </svg>
+
+    <div class="container-vx relative text-center">
+      <div class="vx-in vx-in-1 flex justify-center mb-6">
+        <span class="v-mark">
+          <img src="VELORX_logo.png" alt="ロゴマーク" width="100px" class="h-auto max-w-full">
+        </span>
+      </div>
+
+      <h1 class="vx-in vx-in-1 font-en text-gradient-silver font-semibold text-[3.1rem] sm:text-6xl md:text-7xl tracking-[0.12em] leading-none">
+        VELORX
+      </h1>
+      <p class="vx-in vx-in-2 mt-4 font-mono text-[11px] sm:text-xs tracking-[0.3em] text-inkdim">
+        GOLD AUTOMATED TRADING SYSTEM
+      </p>
+
+      <div class="vx-in vx-in-2 hairline w-40 mx-auto my-7"></div>
+
+      <p class="vx-in vx-in-2 font-en italic text-lg text-gradient-gold">Value Evolves. Possibility Expands.</p>
+      <p class="vx-in vx-in-2 font-display text-sm text-inkdim mt-1">価値は育ち、可能性は広がる。</p>
+
+      <h2 class="vx-in vx-in-3 font-display font-semibold text-[1.9rem] sm:text-4xl md:text-5xl leading-[1.4] mt-10 text-ink">
+        判断を、感情から<br class="sm:hidden">ルールへ。
+      </h2>
+      <p class="vx-in vx-in-3 mt-5 text-inkdim text-sm sm:text-base max-w-md mx-auto leading-loose">
+        MT4用自動売買システム<br>
+        決められた時間帯だけを機械的に監視し<br class="hidden sm:block">
+        迷いのない取引を積み重ねます
+      </p>
+
+      <div class="vx-in vx-in-4 flex flex-col sm:flex-row items-center justify-center gap-4 mt-11">
+        <a href="#guidance" class="btn-gold w-full sm:w-auto">導入の流れを確認</a>
+        <a href="#offer" class="btn-gold w-full sm:w-auto" hidden>価格を見る</a>
+        <a href="#evidence" class="btn-ghost w-full sm:w-auto" hidden>実績を見る</a>
+      </div>
+
+      <!-- spec strip -->
+      <div class="vx-in vx-in-5 grid grid-cols-2 sm:grid-cols-5 gap-px mt-16 max-w-3xl mx-auto rounded-sm overflow-hidden" style="border:1px solid var(--line);">
+        <div class="spec-item px-3 py-4">
+          <div class="font-mono text-[10px] tracking-[0.15em] text-inkmute mb-1">TARGET</div>
+          <div class="font-mono text-sm text-ink">XAU / USD</div>
+        </div>
+        <div class="spec-item px-3 py-4">
+          <div class="font-mono text-[10px] tracking-[0.15em] text-inkmute mb-1">TIME</div>
+          <div class="font-mono text-sm text-ink">18:30–19:30</div>
+        </div>
+        <div class="spec-item px-3 py-4">
+          <div class="font-mono text-[10px] tracking-[0.15em] text-inkmute mb-1">TIME FRAME</div>
+          <div class="font-mono text-sm text-ink">5 MIN</div>
+        </div>
+        <div class="spec-item px-3 py-4">
+          <div class="font-mono text-[10px] tracking-[0.15em] text-inkmute mb-1">PLATFORM</div>
+          <div class="font-mono text-sm text-ink">MT4</div>
+        </div>
+        <div class="spec-item px-3 py-4 col-span-2 sm:col-span-1">
+          <div class="font-mono text-[10px] tracking-[0.15em] text-inkmute mb-1">SYSTEM</div>
+          <div class="font-mono text-sm text-ink">AUTOMATED</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RULE & LOGIC (Manual vs VELORX) ============ -->
+  <section class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">RULE &amp; LOGIC</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          判断を、感情からルールへ。
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">
+          自動化はリスクを無くすのではなく、迷いを無くす。<br>
+          <span class="font-en italic text-inkmute">Automation does not remove risk. It removes hesitation.</span>
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 md:gap-6">
+        <div class="compare-card rounded-sm p-7 md:p-8">
+          <div class="font-en text-xl tracking-[0.08em] text-inkdim mb-6">MANUAL</div>
+          <ul class="space-y-0">
+            <li class="compare-row flex items-center gap-4 py-4">
+              <span class="icon-ring">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8f9db8" stroke-width="1.6"><path d="M3 17l6-6 4 4 8-8"/></svg>
+              </span>
+              <span class="text-sm text-inkdim">チャートを長時間監視し続ける</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4">
+              <span class="icon-ring">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8f9db8" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+              </span>
+              <span class="text-sm text-inkdim">毎回手動でエントリー・決済を設定</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4">
+              <span class="icon-ring">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8f9db8" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v4l3 2"/></svg>
+              </span>
+              <span class="text-sm text-inkdim">局面ごとに直感や感覚で判断する</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4">
+              <span class="icon-ring">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8f9db8" stroke-width="1.6"><path d="M12 21s-7-4.6-7-10.3C5 7 7.2 5 9.8 5c1.4 0 2.6.7 3.2 1.8C13.6 5.7 14.8 5 16.2 5 18.8 5 21 7 21 10.7 21 16.4 12 21 12 21z"/></svg>
+              </span>
+              <span class="text-sm text-inkdim">感情に左右され、ルールを破ってしまう</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="compare-card is-velorx rounded-sm p-7 md:p-8">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="font-en text-xl tracking-[0.08em] text-gradient-gold">VELORX</div>
+          </div>
+          <ul class="space-y-0">
+            <li class="compare-row flex items-center gap-4 py-4" style="border-color:rgba(200,164,99,0.15);">
+              <span class="icon-ring" style="border-color:var(--silver-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.9l.06.06a2 2 0 11-2.9 2.9l-.06-.06a1.7 1.7 0 00-1.9-.34 1.7 1.7 0 00-1 1.6V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.34l-.06.06a2 2 0 11-2.9-2.9l.06-.06a1.7 1.7 0 00.34-1.9 1.7 1.7 0 00-1.6-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.34-1.9l-.06-.06a2 2 0 112.9-2.9l.06.06a1.7 1.7 0 001.9.34H9a1.7 1.7 0 001-1.6V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.34l.06-.06a2 2 0 112.9 2.9l-.06.06a1.7 1.7 0 00-.34 1.9V9a1.7 1.7 0 001.6 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.6 1z"/></svg>
+              </span>
+              <span class="text-sm text-ink">システムが指定時間に正確に監視</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4" style="border-color:rgba(200,164,99,0.15);">
+              <span class="icon-ring" style="border-color:var(--silver-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.6"><path d="M6 3h12l-1.5 6L18 15l-.5 6H6.5L6 15l1.5-6z"/></svg>
+              </span>
+              <span class="text-sm text-ink">最適なタイミングを自動で待機</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4" style="border-color:rgba(200,164,99,0.15);">
+              <span class="icon-ring" style="border-color:var(--silver-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.6"><path d="M12 3v3M5.6 6.6l2 2M3 14h3M18 14h3M16.4 8.6l2-2M8 21h8M9 17.5h6L14 21h-4z"/><path d="M6 14a6 6 0 1112 0c0 2-1.2 3.2-2 4H8c-.8-.8-2-2-2-4z"/></svg>
+              </span>
+              <span class="text-sm text-ink">厳格なルールに基づき機械的に取引</span>
+            </li>
+            <li class="compare-row flex items-center gap-4 py-4" style="border-color:rgba(200,164,99,0.15);">
+              <span class="icon-ring" style="border-color:var(--silver-2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.6"><rect x="3.5" y="4.5" width="17" height="16" rx="1.5"/><path d="M3.5 9.5h17M8 3v3M16 3v3"/></svg>
+              </span>
+              <span class="text-sm text-ink">毎日一定の判断軸で結果のみを確認</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EVIDENCE & PERFORMANCE ============ -->
+  <section id="evidence" class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">BUILT ON EVIDENCE</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          言葉ではなく、記録を見る。
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">
+          一日ではなく、積み重ねを見る。<br>
+          <span class="font-en italic text-inkmute">Consistency Over Excitement.</span>
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-6 items-start">
+        <div class="lg:col-span-2">
+          <div class="panel rounded-sm overflow-hidden">
+            <table class="data-table">
+              <thead>
+                <tr><th>月</th><th>月間損益</th><th>累積損益</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>2月</td><td>+74,957円</td><td class="profit">+74,957円</td></tr>
+                <tr><td>3月</td><td>+86,835円</td><td class="profit">+161,792円</td></tr>
+                <tr><td>4月</td><td>+80,036円</td><td class="profit">+241,828円</td></tr>
+                <tr><td>5月</td><td>+96,483円</td><td class="profit">+338,311円</td></tr>
+                <tr><td>6月</td><td>+87,319円</td><td class="profit">+425,630円</td></tr>
+                <tr><td>7月</td><td>+63,050円</td><td class="profit">+488,680円</td></tr>
+                <tr><td>8月</td><td>+61,080円</td><td class="profit">+549,760円</td></tr>
+                <tr><td>9月</td><td>+112,848円</td><td class="profit">+662,608円</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="offer-box rounded-sm p-6 mt-5 text-center" style="box-shadow:none;">
+            <div class="font-mono text-[10px] tracking-[0.15em] text-inkdim">2026年 2月〜9月 累計利益（8 MONTHS）</div>
+            <div class="font-en text-gradient-gold font-semibold text-4xl mt-2">+662,608 <span class="text-xl">JPY</span></div>
+            <p class="text-[11px] text-inkmute text-center">※全ての取引記録をご確認いただけます。</p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-3">
+          <div class="panel-flat rounded-sm p-6 h-full">
+            <div class="font-mono text-[11px] tracking-[0.1em] text-inkmute text-center mb-4">月別利益推移</div>
+            <div style="height:280px;"><canvas id="profitChart"></canvas></div>
+            <p class="text-[11px] text-inkmute text-center mt-4">※掲載データは過去実績であり、将来の利益を保証するものではありません。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- risk disclosure -->
+      <div class="risk-box rounded-sm p-7 md:p-8 mt-8">
+        <div class="flex items-center gap-2 text-red font-semibold text-base mb-5" style="color:#f0a99f;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f0a99f" stroke-width="1.8"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17.5v.1"/></svg>
+          Evidence includes risk. <br>
+          良い結果だけを見せるブランドにはしない。
+        </div>
+        <div class="grid sm:grid-cols-3 gap-2.5">
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">市場は常に変動する</div>
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">損失が発生する可能性がある</div>
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">証拠金によりリスクは変化する</div>
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">ロット設定により結果は変化する</div>
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">過去の実績は将来を保証しない</div>
+          <div class="risk-item rounded-sm px-4 py-3 text-xs">余裕資金での運用をご検討ください</div>
+        </div>
+      </div>
+    </div>
+    <div class="container-vx text-center">
+      <p class="font-display text-lg sm:text-xl text-ink mt-10 leading-[1.7]">
+        積み重ねたデータを、ご自身の目で確認してください。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ ACCOUNT SETUP ============ -->
+  <section class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">ACCOUNT SETUP</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          Start Small. Understand First.
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">まずは仕組みを理解し、無理のない範囲からスタートできます。</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="plan-card featured rounded-sm p-7 text-center">
+          <div class="font-en text-2xl tracking-[0.08em] text-ink mt-4 mb-5">STANDARD</div>
+          <div class="hairline mb-5"></div>
+          <div class="mb-4">
+            <div class="text-[11px] text-inkmute mb-1">検証時証拠金</div>
+            <div class="font-mono text-gradient-gold font-semibold text-lg">100,000円 〜 150,000円</div>
+          </div>
+          <div>
+            <div class="text-[11px] text-inkmute mb-1">検証時 LOT</div>
+            <div class="font-mono text-gradient-gold font-semibold text-lg">0.01 〜</div>
+          </div>
+        </div>
+
+        <div class="plan-card rounded-sm p-7 text-center">
+          <div class="font-en text-2xl tracking-[0.08em] text-ink mt-4 mb-5">MICRO</div>
+          <div class="hairline mb-5"></div>
+          <div class="mb-4">
+            <div class="text-[11px] text-inkmute mb-1">検証時証拠金</div>
+            <div class="font-mono text-ink font-semibold text-lg">30,000円 〜</div>
+          </div>
+          <div>
+            <div class="text-[11px] text-inkmute mb-1">検証時 LOT</div>
+            <div class="font-mono text-ink font-semibold text-lg">0.1 〜</div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-[11px] text-inkmute mt-6">※運用資金は商品代金とは別途必要です。</p>
+
+      <div class="panel-flat rounded-sm p-7 md:p-8 mt-10 max-w-3xl mx-auto text-center">
+        <h3 class="font-display text-base text-ink mb-4">検証時取引環境 <span class="font-en text-inkmute text-sm">(Tested Trading Environment)</span></h3>
+        <p class="text-sm text-inkdim leading-loose">
+          実稼働データの検証環境として <span class="text-ink font-medium">XMTrading</span> や <span class="text-ink font-medium">Vantage Trading</span> などのグローバル環境を活用。シミュレーション上の数字だけでなく、実際の取引環境で得られたデータを重視しています。
+        </p>
+        <p class="text-[11px] text-inkmute mt-4">※各社がVELORXの性能・利益を保証または推奨するものではありません。取引条件・利用サービスは口座によって異なります。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SETUP & SUPPORT ============ -->
+  <section class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">SETUP &amp; SUPPORT</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          You Don't Build It Alone.
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">運用環境をひとつの流れとして理解。最初の構築はサポートしながら一緒に進めます。</p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-center font-mono text-xs sm:text-sm text-gradient-gold font-semibold mb-12 px-4">
+        <span>VELORX</span><span class="text-inkmute">→</span>
+        <span>MT4</span><span class="text-inkmute">→</span>
+        <span>FX ACCOUNT</span><span class="text-inkmute">→</span>
+        <span>VPS</span><span class="text-inkmute">→</span>
+        <span>AUTOMATED OPERATION</span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 01</div>
+          <div class="text-sm text-ink">口座準備</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 02</div>
+          <div class="text-sm text-ink">本人確認</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 03</div>
+          <div class="text-sm text-ink">VPS準備</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 04</div>
+          <div class="text-sm text-ink">MT4設定</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 05</div>
+          <div class="text-sm text-ink">VELORX設置</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center">
+          <div class="step-num mb-2">STEP 06</div>
+          <div class="text-sm text-ink">初期ロット設定</div>
+        </div>
+        <div class="step-item rounded-sm px-3 py-5 text-center col-span-2 sm:col-span-1">
+          <div class="step-num mb-2">STEP 07</div>
+          <div class="text-sm text-gradient-gold font-semibold">START</div>
+        </div>
+      </div>
+
+      <div class="mt-10 text-center rounded-sm p-6" style="border:1px dashed rgba(184,196,214,0.45); background:rgba(184,196,214,0.05);">
+        <p class="text-gradient-gold font-semibold text-sm">🎧 Setting support included</p>
+        <p class="text-inkdim text-sm mt-1">難しそうに見える部分も、ひとつひとつ案内します。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DAILY ROUTINE: SET / RUN / REVIEW ============ -->
+  <section class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">DAILY ROUTINE</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          Set. Run. Review.
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">毎日操作するのではなく、毎日「確認」する。</p>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto">
+        <div class="grid sm:grid-cols-3 gap-6 relative z-10">
+          <div class="loop-card rounded-sm p-7 text-center">
+            <div class="font-en text-gradient-gold font-semibold text-2xl tracking-[0.1em] mb-3">SET</div>
+            <div class="text-ink font-medium mb-1.5">設定する</div>
+            <div class="text-xs text-inkdim leading-relaxed">初期設定・パラメータ</div>
+          </div>
+          <div class="loop-card rounded-sm p-7 text-center">
+            <div class="font-en text-gradient-gold font-semibold text-2xl tracking-[0.1em] mb-3">RUN</div>
+            <div class="text-ink font-medium mb-1.5">稼働させる</div>
+            <div class="text-xs text-inkdim leading-relaxed">指定の時間帯にシステムが自動で監視・取引</div>
+          </div>
+          <div class="loop-card rounded-sm p-7 text-center">
+            <div class="font-en text-gradient-gold font-semibold text-2xl tracking-[0.1em] mb-3">REVIEW</div>
+            <div class="text-ink font-medium mb-1.5">結果を確認</div>
+            <div class="text-xs text-inkdim leading-relaxed">スマホのMT4アプリから残高・損益を確認</div>
+          </div>
+        </div>
+        <div class="hidden sm:flex justify-center items-center gap-2 mt-6 text-inkmute text-xs font-mono">
+          <span>&#8635;</span><span>毎日自動で稼働し、自由なタイミングで確認するだけ</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIT CHECK ============ -->
+  <section class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">CHECK LIST</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          Is VELORX for you?
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">自分に合うかどうかを、事前に見極めてください。<br>VELORXは全員に向いている商品ではありません。</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="fit-yes rounded-sm p-7 md:p-8">
+          <div class="flex items-center gap-2.5 text-green font-semibold text-lg mb-5" style="color:#7fe2b8;">
+            <span>✓</span> こんな方におすすめ
+          </div>
+          <ul class="fit-list text-sm text-inkdim">
+            <li class="py-3">仕事をしながら効率的に運用したい</li>
+            <li class="py-3">家事や育児と両立しながら資産運用したい</li>
+            <li class="py-3">長時間チャートを見続けるのが苦痛</li>
+            <li class="py-3">自分で売買判断（感情的な判断）をするのが苦手</li>
+            <li class="py-3">時間効率を何より重視したい</li>
+            <li class="py-3">データや証拠を見て論理的に判断したい</li>
+          </ul>
+        </div>
+
+        <div class="fit-no rounded-sm p-7 md:p-8">
+          <div class="flex items-center gap-2.5 font-semibold text-lg mb-5" style="color:#f0a99f;">
+            <span>✕</span> 向いていない方
+          </div>
+          <ul class="fit-list text-sm text-inkdim">
+            <li class="py-3">元本保証を求めている方</li>
+            <li class="py-3">絶対に損をしたくないと考えている方</li>
+            <li class="py-3">短期間で一攫千金を狙っている方</li>
+            <li class="py-3">生活費や借入金など余裕のない資金で運用しようとしている方</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ONLINE GUIDANCE / CTA ============ -->
+  <section id="guidance" class="py-24 md:py-32 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="eyebrow">ONLINE GUIDANCE</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          取引履歴 ＆ 稼働画面を公開
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">
+          画像や文章だけではお伝えしきれない「生の全取引履歴データ」や「実際の稼働時の画面録画」を、Google Meetの画面共有にて直接お見せいたします。<br>
+          仕組みや実績をご自身の目でご確認いただいた上で、導入のご案内をいたします。
+        </p>
+      </div>
+
+      <!-- 3 Step Flow -->
+      <div class="max-w-4xl mx-auto mb-12">
+        <div class="font-mono text-[11px] tracking-[0.18em] text-inkmute text-center mb-6">HOW TO START (3 STEPS)</div>
+        <div class="grid sm:grid-cols-3 gap-4">
+          <div class="step-item rounded-sm p-6 text-center">
+            <div class="step-num mb-2">STEP 01</div>
+            <div class="text-ink font-medium text-sm mb-2">日程予約</div>
+            <div class="text-xs text-inkdim leading-relaxed">下記ボタンより、ご都合の良い日時を選択</div>
+          </div>
+          <div class="step-item rounded-sm p-6 text-center">
+            <div class="step-num mb-2">STEP 02</div>
+            <div class="text-ink font-medium text-sm mb-2">内容確認</div>
+            <div class="text-xs text-inkdim leading-relaxed">画面共有にて取引履歴データや稼働時の画面録画を確認・質問</div>
+          </div>
+          <div class="step-item rounded-sm p-6 text-center">
+            <div class="step-num mb-2 text-gradient-gold">STEP 03</div>
+            <div class="text-gradient-gold font-semibold text-sm mb-2">導入・運用スタート</div>
+            <div class="text-xs text-inkdim leading-relaxed">内容にご納得いただけた場合のみ、システムの設置や口座開設へ進みます</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Action Box -->
+      <div class="offer-box rounded-sm p-8 md:p-12 max-w-2xl mx-auto text-center">
+        <h3 class="font-display font-semibold text-xl sm:text-2xl text-ink mb-3">
+          実績・稼働画面等を確認 ＆ 導入案内
+        </h3>
+        <p class="text-xs sm:text-sm text-inkdim max-w-lg mx-auto leading-relaxed mb-8">
+          所要時間：15分〜30分程度<br>
+          導入のご案内は希望者のみにしておりますのでお気軽にご参加ください。
+        </p>
+
+        <!-- CTA Button -->
+        <div class="mb-8">
+          <a href="https://app.spirinc.com/patterns/availability-sharing/n-eB08U2Am5Kn4PbcKAfN/confirm" target="_blank" class="btn-gold w-full sm:w-auto text-sm sm:text-base py-4 px-8">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            日程を選択する(Google Meet)
+          </a>
+        </div>
+
+        <!-- Trust / Safety Points -->
+        <div class="pt-6 border-t border-hair max-w-md mx-auto text-left">
+          <ul class="space-y-2.5 text-xs text-inkdim">
+            <li class="flex items-start gap-2">
+              <span class="text-green flex-none">✓</span>
+              <span><strong>強引な営業・勧誘は一切行いません</strong>（「自分には合わない」と思われた場合はその場でお断り・ご退出いただいて構いません）</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green flex-none">✓</span>
+              <span><strong>カメラOFF（顔出し不要）でご参加いただけます</strong></span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green flex-none">✓</span>
+              <span>枠は30分ですが、質疑応答がスムーズに終わればその時点で終了しても構いません</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green flex-none">✓</span>
+              <span>分割払いのご利用で<strong>実質手出し0円</strong>も見込めます</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-yellow flex-none">⚠️</span>
+              <span>本システムは、余剰資金をご用意できる方向けの仕組みとなっております。生活費に余裕がない方へのご案内はお断りしておりますのでご了承ください。</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SPECIAL OFFER / PRICING ============ -->
+  <section id="offer" class="py-24 md:py-32 border-t" style="border-color:var(--line);" hidden>
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-16">
+        <span class="eyebrow">SPECIAL OFFER</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl md:text-4xl mt-4 text-ink leading-[1.5]">
+          販売価格のご案内
+        </h2>
+        <p class="text-inkdim text-sm mt-5 leading-loose">システムの提供と、稼働するまでの初期設定をサポートします。</p>
+      </div>
+
+      <div class="offer-box rounded-sm p-9 md:p-10 max-w-xl mx-auto text-center">
+        <div class="text-inkmute text-base line-through">通常価格 298,000円</div>
+        <div class="font-en text-gradient-gold-price font-semibold text-4xl sm:text-5xl mt-2 mb-8">
+          期間限定価格 <span class="whitespace-nowrap">198,000円</span>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3 text-left mb-9">
+          <div class="rounded-sm p-4" style="border:1px solid var(--line); background:rgba(255,255,255,0.02);">
+            <div class="font-mono text-[10px] tracking-[0.12em] text-gold2" style="color:var(--silver-2);">BONUS 01</div>
+            <div class="text-sm text-ink font-medium mt-1">セルフバックマニュアル</div>
+          </div>
+          <div class="rounded-sm p-4" style="border:1px solid var(--line); background:rgba(255,255,255,0.02);">
+            <div class="font-mono text-[10px] tracking-[0.12em]" style="color:var(--silver-2);">BONUS 02</div>
+            <div class="text-sm text-ink font-medium mt-1">アフィリエイトマニュアル</div>
+          </div>
+        </div>
+
+        <div class="mb-9">
+          <a href="https://forms.gle/6o2jNSTRH7ibv1aE8" class="btn-gold w-full sm:w-auto">今すぐ申し込む</a>
+        </div>
+        <div>
+          <a href="https://app.spirinc.com/patterns/availability-sharing/n-eB08U2Am5Kn4PbcKAfN/confirm" target="_blank" class="btn-ghost btn-sm hidden sm:inline-flex">まずはオンラインで無料相談してみる</a>
+        </div>
+        <p class="text-[11px] text-inkmute mt-3">※ 特定の条件を満たす方には5万円キャッシュバックしています。キャッシュバック希望の方はオンライン相談で条件をご確認ください。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING RECAP ============ -->
+  <!--
+  <section class="py-20 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="flex flex-wrap justify-center gap-3">
+        <div class="flex items-center gap-2 rounded-full px-4 py-2" style="border:1px solid var(--line-strong);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span class="text-xs text-inkdim font-mono">Evidence</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full px-4 py-2" style="border:1px solid var(--line-strong);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/></svg>
+          <span class="text-xs text-inkdim font-mono">Consistency</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full px-4 py-2" style="border:1px solid var(--line-strong);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.8"><path d="M7 12l3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg>
+          <span class="text-xs text-inkdim font-mono">Trust</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full px-4 py-2" style="border:1px solid var(--line-strong);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--silver-2)" stroke-width="1.8"><path d="M4 19h16M8 19V9M13 19V5M18 19v-7"/></svg>
+          <span class="text-xs text-inkdim font-mono">Expansion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  -->
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="pt-20 pb-28 md:pb-20 border-t" style="border-color:var(--line); background:#04060a;">
+  <div class="container-vx text-center">
+    <p class="font-en italic text-gradient-silver text-xl mb-6">"Where Value Evolves. Possibility Expands."</p>
+    <p class="text-inkdim text-sm max-w-md mx-auto leading-loose mb-10">
+      結果だけではなく、その結果に至るまでの『積み重ね』を見る。<br>
+      あなた自身で、データを見て判断してください。
+    </p>
+
+    <div class="hairline w-24 mx-auto mb-8"></div>
+
+    <p class="text-[11px] text-inkmute leading-relaxed max-w-lg mx-auto">
+      © Ryo Igarashi All Rights Reserved.<br><br>
+      【免責事項】当商品は利益や元本を保証するものではありません。FX取引には価格変動リスクが伴い、投資元本を割り込む恐れがあります。余剰資金にて運用を行ってください。
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-7 text-xs">
+      <a href="https://app.notion.com/p/3d1afd024fd380bcb732f837a8003c76" class="text-inkdim hover:text-gold2" style="text-decoration:underline; text-underline-offset:3px;">特定商取引法に基づく表記</a>
+      <a href="https://app.notion.com/p/3d1afd024fd380c98bc1e8a5dc097f48" class="text-inkdim hover:text-gold2" style="text-decoration:underline; text-underline-offset:3px;">プライバシーポリシー</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MOBILE STICKY CTA ============ -->
+<div class="mobile-cta-bar sm:hidden">
+  <a href="#guidance" class="btn-gold w-full btn-sm">導入の流れを確認</a>
+</div>
+
+<script>
+  // Sticky header background on scroll
+  const header = document.getElementById('site-header');
+  const onScroll = () => {
+    if (window.scrollY > 40) header.classList.add('is-scrolled');
+    else header.classList.remove('is-scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Profit chart
+  const ctx = document.getElementById('profitChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['2月','3月','4月','5月','6月','7月','8月','9月'],
+        datasets: [{
+          label: '月間利益（円）',
+          data: [74957,86835,80036,96483,87319,63050,61080,112848],
+          backgroundColor: 'rgba(87,209,156,0.55)',
+          hoverBackgroundColor: 'rgba(87,209,156,0.85)',
+          borderRadius: 3,
+          maxBarThickness: 42
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0d1424',
+            borderColor: 'rgba(180,195,225,0.2)',
+            borderWidth: 1,
+            titleColor: '#eef1f8',
+            bodyColor: '#98a3ba',
+            padding: 10,
+            callbacks: {
+              label: (c) => '+' + c.parsed.y.toLocaleString() + '円'
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#98a3ba', font: { family: "'IBM Plex Mono'", size: 11 } },
+            grid: { display: false },
+            border: { color: 'rgba(180,195,225,0.15)' }
+          },
+          y: {
+            ticks: {
+              color: '#5c6680',
+              font: { family: "'IBM Plex Mono'", size: 10 },
+              callback: (v) => v/1000 + 'k'
+            },
+            grid: { color: 'rgba(180,195,225,0.06)' },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
