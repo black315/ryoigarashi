@@ -10,8 +10,8 @@ const CONFIG = {
   // data-link="…" を付けた <a> の href が、ここのURLに置き換わります（ヘッダー・ヒーローのボタン用）
   // 各事業カードのリンクは、index.html の各カード内の href を直接書き換えてください
   links: {
-    instagram: "https://www.instagram.com/",   // TODO: 自分のInstagramのURL
-    line: "https://lin.ee/",                   // TODO: LINE公式アカウントのURL
+    instagram: "https://www.instagram.com/ry0x13462e1",
+    line: "https://line.me/ti/p/0yxEpxLLM9",
   },
 };
 
