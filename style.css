@@ -243,26 +243,48 @@ button { cursor: pointer; }
   animation: rise 1s var(--ease) 0.5s both;
 }
 
-.hero__jump {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 64px;
-  animation: rise 1s var(--ease) 0.65s both;
-}
-.chip {
-  padding: 0.45em 1.1em;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill);
+.hero__profile {
+  max-width: 720px;
+  margin: 64px auto 0;
+  padding: 28px clamp(20px, 4vw, 40px) 32px;
   background: var(--color-glass);
   -webkit-backdrop-filter: var(--blur);
   backdrop-filter: var(--blur);
-  font-size: var(--fs-small);
-  color: var(--color-text-sub);
-  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-s);
+  animation: rise 1s var(--ease) 0.65s both;
 }
-.chip:hover { color: var(--color-text); border-color: var(--color-text); }
+.hero__profile-title {
+  margin-bottom: 20px;
+  font-size: var(--fs-lead);
+  color: var(--color-text-sub);
+}
+.hero__profile-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 32px;
+  margin: 0;
+}
+.hero__profile-item { flex: 0 1 180px; min-width: 130px; }
+.hero__profile-item dt {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--color-text-sub);
+}
+.hero__profile-item dd {
+  margin: 2px 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.hero__profile-sub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--color-text-sub);
+}
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(18px); }
