@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="images/VELORX_logo.png" type="image/png">
+<link rel="icon" href="VELORX_logo.png" type="image/png">
 <title>VELORX | GOLD AUTOMATED TRADING SYSTEM</title>
 <meta name="description" content="VELORX — MT4用ゴールド専用自動売買システム。感情ではなく、ルールで判断する。">
 
@@ -357,7 +357,7 @@
   <div class="container-vx flex items-center justify-between py-4">
     <a href="#top" class="flex items-center gap-2.5">
       <span class="v-mark" style="width:22px;">
-        <img src="images/VELORX_logo.png" alt="ロゴマーク" width="50px" class="h-auto max-w-full">
+        <img src="VELORX_logo.png" alt="ロゴマーク" width="50px" class="h-auto max-w-full">
       </span>
       <span class="font-en text-lg tracking-[0.18em] text-gradient-silver font-semibold">VELORX</span>
     </a>
@@ -387,7 +387,7 @@
     <div class="container-vx relative text-center">
       <div class="vx-in vx-in-1 flex justify-center mb-6">
         <span class="v-mark">
-          <img src="images/VELORX_logo.png" alt="ロゴマーク" width="100px" class="h-auto max-w-full">
+          <img src="VELORX_logo.png" alt="ロゴマーク" width="100px" class="h-auto max-w-full">
         </span>
       </div>
 
@@ -595,6 +595,73 @@
       <p class="font-display text-lg sm:text-xl text-ink mt-10 leading-[1.7]">
         積み重ねたデータを、ご自身の目で確認してください。
       </p>
+    </div>
+  </section>
+
+  <!-- ============ SIMULATOR SECTION ============ -->
+  <section id="simulator" class="py-24 border-t" style="border-color:var(--line);">
+    <div class="container-vx">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <span class="eyebrow">SIMULATION &amp; RISK</span>
+        <h2 class="font-display font-semibold text-2xl sm:text-3xl mt-4 text-ink">
+          Simulator
+        </h2>
+        <p class="text-inkdim text-sm mt-3">
+          運用予定の「証拠金」と「ロット」を入力すると、過去実績に基づく月間想定利益とリスク評価を試算します。
+        </p>
+      </div>
+
+      <div class="panel rounded-sm p-7 md:p-10 max-w-xl mx-auto">
+        <div class="grid sm:grid-cols-2 gap-5 mb-8">
+          <!-- 証拠金 自由入力 -->
+          <div>
+            <label class="block text-xs font-mono text-inkmute mb-2">証拠金（運用資金・円）</label>
+            <div class="flex items-center gap-2">
+              <input type="number" id="sim-capital" value="150000" step="10000" min="10000" class="w-full bg-void border border-hair rounded-sm px-4 py-3 text-ink font-mono focus:outline-none focus:border-silver2 text-base">
+              <span class="text-xs text-inkdim font-mono">円</span>
+            </div>
+          </div>
+
+          <!-- ロット 自由入力 -->
+          <div>
+            <label class="block text-xs font-mono text-inkmute mb-2">運用ロット数</label>
+            <div class="flex items-center gap-2">
+              <input type="number" id="sim-lot" value="0.01" step="0.01" min="0.01" class="w-full bg-void border border-hair rounded-sm px-4 py-3 text-ink font-mono focus:outline-none focus:border-silver2 text-base">
+              <span class="text-xs text-inkdim font-mono">Lot</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 試算結果表示エリア -->
+        <div class="rounded-sm p-6 mb-6" style="border:1px solid var(--line); background:rgba(255,255,255,0.02);">
+          <div class="text-xs font-mono text-inkmute mb-4">【 試算結果 】</div>
+
+          <!-- 月間想定利益（数値出力） -->
+          <div class="flex items-baseline justify-between mb-4 pb-4 border-b border-hair">
+            <span class="text-sm text-inkdim">月間想定利益</span>
+            <span id="sim-monthly" class="font-en text-gradient-gold font-semibold text-xl sm:text-2xl">+0 円</span>
+          </div>
+
+          <!-- リスク評価（高・中・低のみ出力） -->
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-sm text-inkdim">リスク評価</span>
+            <span id="sim-risk-badge" class="px-3 py-1 rounded-sm text-xs font-mono font-semibold">判定中...</span>
+          </div>
+          <p id="sim-risk-desc" class="text-xs text-inkdim mt-3 leading-relaxed">
+            リスク解説がここに表示されます。
+          </p>
+        </div>
+
+        <!-- 注意書き -->
+        <p class="text-[11px] text-inkmute mb-8 leading-relaxed text-center">
+          ※利益およびリスク評価は過去の検証実績データに基づく試算です。利益を保証するものではありません。
+        </p>
+
+        <!-- CTAへの誘導 -->
+        <div class="text-center">
+          <a href="#guidance" class="btn-gold w-full text-xs sm:text-sm sm:w-auto">導入の流れを確認</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1024,6 +1091,60 @@
       }
     });
   }
+
+  // 自由入力対応シミュレーションロジック
+  const capitalInput = document.getElementById('sim-capital');
+  const lotInput = document.getElementById('sim-lot');
+  const simMonthly = document.getElementById('sim-monthly');
+  const simRiskBadge = document.getElementById('sim-risk-badge');
+  const simRiskDesc = document.getElementById('sim-risk-desc');
+
+  function updateSimulation() {
+    const capital = parseFloat(capitalInput.value) || 0;
+    const lot = parseFloat(lotInput.value) || 0.01;
+
+    // 0.01ロット時の月間実績基準値（6万〜11万円）
+    const baseMinProfit = 60000;
+    const baseMaxProfit = 110000;
+
+    // ロット倍率（0.01ロット＝1倍）
+    const multiplier = lot / 0.01;
+
+    // 数値出力：月間想定利益
+    const monthlyMin = Math.round(baseMinProfit * multiplier);
+    const monthlyMax = Math.round(baseMaxProfit * multiplier);
+
+    simMonthly.textContent = `+${monthlyMin.toLocaleString()} 〜 ${monthlyMax.toLocaleString()} 円`;
+
+    // リスク判定基準（数値は画面に出さず、証拠金に対する比率だけで「高・中・低」を出力）
+    // 0.01ロットあたりの基準：10万円以下＝高、15万円以上＝中、30万円以上＝低
+    const highRiskThreshold = 100000 * multiplier;
+    const lowRiskThreshold = 300000 * multiplier;
+
+    if (capital <= highRiskThreshold) {
+      simRiskBadge.textContent = '高';
+      simRiskBadge.style.background = 'rgba(226,119,109,0.15)';
+      simRiskBadge.style.color = '#f0a99f';
+      simRiskDesc.textContent = '設定されたロットに対して証拠金が少なく、相場変動時の含み損に耐えきれずロスカット（全額消失）となるリスクが非常に高いです。';
+    } else if (capital < lowRiskThreshold) {
+      simRiskBadge.textContent = '中';
+      simRiskBadge.style.background = 'rgba(200,164,99,0.15)';
+      simRiskBadge.style.color = 'var(--gold-1)';
+      simRiskDesc.textContent = '標準的な運用水準です。想定される含み損に耐えうるバランスですが、一時的な急変動に備えて資金に少し余裕を持たせるとより安心です。';
+    } else {
+      simRiskBadge.textContent = '低';
+      simRiskBadge.style.background = 'rgba(87,209,156,0.15)';
+      simRiskBadge.style.color = '#7fe2b8';
+      simRiskDesc.textContent = '十分な証拠金が確保されています。想定される最大クラスの含み損が発生した場合でも十分に耐えきれる安全性の高い設定です。';
+    }
+  }
+
+  // リアルタイム反映（自由入力イベント）
+  capitalInput.addEventListener('input', updateSimulation);
+  lotInput.addEventListener('input', updateSimulation);
+
+  // 初期実行
+  updateSimulation();
 </script>
 
 </body>
